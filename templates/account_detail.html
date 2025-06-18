@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ account.name }} - 交易明細</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        table { border-collapse: collapse; width: 70%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background: #f0f0f0; }
+        .back-link { margin-bottom: 1em; display: inline-block; }
+        .add-form { margin-bottom: 2em; }
+    </style>
+</head>
+<body>
+    <a class="back-link" href="/">← 返回帳戶總攬</a>
+    <h1>{{ account.name }} - 交易明細</h1>
+    <h3>目前餘額：{{ '%.2f'|format(balance) }}</h3>
+
+    <!-- 新增交易表單（之後可補上） -->
+    <form class="add-form" method="post" action="/accounts/{{ account.id }}/transactions">
+        <select name="type" required>
+            <option value="deposit">存入</option>
+            <option value="withdraw">提出</option>
+        </select>
+        <input type="number" name="amount" step="0.01" min="0.01" placeholder="金額" required>
+        <input type="date" name="date" value="{{ now().strftime('%Y-%m-%d') }}" required>
+        <input type="number" name="interest_rate" step="0.01" min="0" placeholder="利率(可選)">
+        <select name="interest_type">
+            <option value="">利率類型(可選)</option>
+            <option value="yearly">年利率</option>
+            <option value="monthly">月利率</option>
+        </select>
+        <button type="submit">新增交易</button>
+    </form>
+
+    <table>
+        <tr>
+            <th>日期</th>
+            <th>類型</th>
+            <th>金額</th>
+            <th>利率</th>
+            <th>利率類型</th>
+            <th>配息金額</th>
+        </tr>
+        {% for t in transactions %}
+        <tr>
+            <td>{{ t.date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ t.type }}</td>
+            <td>{{ '%.2f'|format(t.amount) }}</td>
+            <td>{{ t.interest_rate if t.interest_rate else '' }}</td>
+            <td>{{ t.interest_type if t.interest_type else '' }}</td>
+            <td>{{ t.interest_amount if t.interest_amount else '' }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html> 

@@ -1,1 +1,40 @@
-
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>銀行帳戶總攬</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        table { border-collapse: collapse; width: 60%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background: #f0f0f0; }
+        form.inline { display: inline; }
+        .add-form { margin-bottom: 2em; }
+    </style>
+</head>
+<body>
+    <h1>銀行帳戶總攬</h1>
+    <form class="add-form" method="post" action="/">
+        <input type="text" name="name" placeholder="新帳戶名稱" required>
+        <button type="submit">新增帳戶</button>
+    </form>
+    <table>
+        <tr>
+            <th>帳戶名稱</th>
+            <th>餘額</th>
+            <th>操作</th>
+        </tr>
+        {% for acc in accounts %}
+        <tr>
+            <td><a href="/accounts/{{ acc.id }}">{{ acc.name }}</a></td>
+            <td>{{ '%.2f'|format(acc.balance) }}</td>
+            <td>
+                <form class="inline" method="post" action="/accounts/{{ acc.id }}/delete" onsubmit="return confirm('確定要刪除帳戶？');">
+                    <button type="submit">刪除</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html> 
